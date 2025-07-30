@@ -223,23 +223,3 @@ python -m venv ai
 source ai/bin/activate
 pip install -r requirements.txt
 ```
-
-## 🤝 貢献
-
-1. このリポジトリをフォーク
-2. 機能ブランチを作成 (`git checkout -b feature/AmazingFeature`)
-3. 変更をコミット (`git commit -m 'Add some AmazingFeature'`)
-4. ブランチにプッシュ (`git push origin feature/AmazingFeature`)
-5. プルリクエストを作成
-
-## 📝 ライセンス
-
-このプロジェクトはMITライセンスの下で公開されています。詳細は `LICENSE` ファイルを参照してください。
-
-## 📞 サポート
-
-問題や質問がある場合は、GitHubのIssuesページでお知らせください。
-
----
-
-**AI Webスクレイパー** - インテリジェントなウェブデータ抽出ツール 🕷️✨ 
