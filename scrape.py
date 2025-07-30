@@ -12,14 +12,20 @@ import os
 def scrape_website(website):
     """ウェブサイトをスクレイピング - クラウド対応版"""
     
-    # クラウド環境かどうかをチェック
-    is_cloud = os.environ.get('STREAMLIT_SERVER_PORT') is not None
+    # クラウド環境かどうかをチェック（より確実な方法）
+    is_cloud = (
+        os.environ.get('STREAMLIT_SERVER_PORT') is not None or
+        os.environ.get('STREAMLIT_SERVER_ADDRESS') is not None or
+        os.environ.get('STREAMLIT_SERVER_HEADLESS') is not None or
+        os.environ.get('STREAMLIT_SERVER_ENABLE_CORS') is not None or
+        os.environ.get('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None
+    )
     
-    if is_cloud:
-        # クラウド環境ではrequests + BeautifulSoupを使用
+    # クラウド環境またはChromeDriverが存在しない場合はrequestsを使用
+    if is_cloud or not os.path.exists("./chromedriver"):
         return scrape_with_requests(website)
     else:
-        # ローカル環境ではSeleniumを使用
+        # ローカル環境でChromeDriverが存在する場合はSeleniumを使用
         return scrape_with_selenium(website)
 
 def scrape_with_requests(website):

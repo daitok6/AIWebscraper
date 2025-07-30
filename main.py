@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import json
+import os
 from datetime import datetime
 from scrape import scrape_website, split_dom_content
 from parse import parse_with_ollama
@@ -10,6 +11,15 @@ st.set_page_config(
     page_title="AI Webスクレイパー",
     page_icon="🕷️",
     layout="wide"
+)
+
+# クラウド環境かどうかをチェック
+is_cloud = (
+    os.environ.get('STREAMLIT_SERVER_PORT') is not None or
+    os.environ.get('STREAMLIT_SERVER_ADDRESS') is not None or
+    os.environ.get('STREAMLIT_SERVER_HEADLESS') is not None or
+    os.environ.get('STREAMLIT_SERVER_ENABLE_CORS') is not None or
+    os.environ.get('STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION') is not None
 )
 
 # セッション状態の初期化
@@ -26,6 +36,13 @@ if 'saved_templates' not in st.session_state:
     }
 
 st.title("🕷️ AI Webスクレイパー")
+
+# 環境表示
+if is_cloud:
+    st.info("☁️ **クラウド環境で実行中** - requests + BeautifulSoupを使用")
+else:
+    st.info("💻 **ローカル環境で実行中** - Selenium + ChromeDriverを使用")
+
 st.markdown("---")
 
 # サイドバー - モデル選択とテンプレートライブラリ
@@ -46,6 +63,10 @@ with st.sidebar:
     )
     
     st.info(f"選択中: {available_models[selected_model]}")
+    
+    # Ollama警告（クラウド環境の場合）
+    if is_cloud:
+        st.warning("⚠️ **注意**: クラウド環境ではOllamaが利用できません。ローカルでOllamaを起動してください。")
     
     st.markdown("---")
     st.header("📚 テンプレートライブラリ")
@@ -261,7 +282,10 @@ with col2:
                             
                     except Exception as e:
                         st.error(f"❌ AI解析中にエラーが発生しました: {str(e)}")
-                        st.info("💡 ヒント: Ollamaが起動しているか確認してください。")
+                        if is_cloud:
+                            st.info("💡 ヒント: クラウド環境ではOllamaが利用できません。ローカルでOllamaを起動してください。")
+                        else:
+                            st.info("💡 ヒント: Ollamaが起動しているか確認してください。")
                     finally:
                         # プログレスバーをクリア
                         progress_bar.empty()
