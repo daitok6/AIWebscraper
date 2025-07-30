@@ -1,0 +1,6 @@
+# テスト用依存関係
+pytest
+pytest-cov
+coverage
+pytest-mock
+pytest-asyncio 
